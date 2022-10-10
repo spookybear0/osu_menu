@@ -25,6 +25,9 @@ namespace gd {
 		void setFromRefresh(bool value) {
 			m_bFromRefresh = value;
 		}
+		static const char* getLoadingString() {
+			return reinterpret_cast<const char* (__fastcall*)()>(base + 0x18cf40)();
+		}
 	};
 }
 

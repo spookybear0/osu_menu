@@ -16,8 +16,10 @@ namespace gd {
         LeaderboardManagerDelegate
     {
         public:
-            PAD(4);
-            int m_nAccountID;
+            GJUserScore* m_score;
+            int m_accountID;
+            PAD(56);
+            cocos2d::CCArray* m_buttons;
 
         public:
             static ProfilePage* create(int accountID, bool idk) {

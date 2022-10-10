@@ -15,7 +15,7 @@ namespace gd {
             int stars_;
             int diamonds_;
             int demons_;
-            int playerRank_;
+            int playerRank_ ;
             int creatorPoints_; // note - internally this is named levels
             int secretCoins_;
             int userCoins_;
@@ -63,6 +63,10 @@ namespace gd {
             // bool isCurrentUser();
             // void mergeWithScore(GJUserScore*);
 
+            static GJUserScore* create() {
+                return reinterpret_cast<GJUserScore*(__thiscall*)()>(base + 0xc1660)();
+            }
+
             inline IconType getIconType() const { return this->iconType_; };
 
             inline int getPlayerCube() const { return this->playerCube_; };
@@ -80,6 +84,9 @@ namespace gd {
             inline int getPlayerColor2() const { return this->color2_; };
 
             inline std::string getPlayerName() const { return this->userName_; };
+
+            inline int getPlayerRank() const { return this->playerRank_; };
+            inline int getGlobalRank() const { return this->globalRank_; };
     };
 }
 

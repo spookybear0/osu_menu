@@ -46,7 +46,7 @@ class GJGameLevel;
         cocos2d::CCDictionary* unkDict22;
         cocos2d::CCDictionary* unkDict23;
         cocos2d::CCDictionary* unkDict24;
-        cocos2d::CCDictionary* unkDict25;
+        cocos2d::CCDictionary* m_storedUserInfo;
         cocos2d::CCDictionary* unkDict26;
         cocos2d::CCDictionary* unkDict27;
         cocos2d::CCDictionary* unkDict28;
