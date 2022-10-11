@@ -15,7 +15,6 @@ USING_NS_CC;
 class OsuMenu: public CCLayer {
 private:
     bool m_finishedMoving = false;
-    gd::CCMenuItemSpriteExtra* m_cookieButton;
 
     CCMenu* m_cookieMenu;
     CCMenu* m_buttonMenu;
@@ -36,6 +35,7 @@ public:
     static OsuMenu* switchToOsuMenuButton();
 
     CCLabelTTF* m_rank;
+    gd::CCMenuItemSpriteExtra* m_cookieButton;
 protected:
     void changeButtonSprite(gd::CCMenuItemSpriteExtra* button, const char* spriteName);
     void keyBackClicked();

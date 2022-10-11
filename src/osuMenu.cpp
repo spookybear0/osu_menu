@@ -22,16 +22,6 @@ CCScene* pushLayer(CCLayer* layer) {
     return scene;
 }
 
-
-/* UserInfoDelegate overrides
-virtual void getUserInfoFinished(gd::GJUserScore* score) {
-    std::cout << score->getPlayerName() << std::endl;
-}
-
-virtual void OsuMenu::getUserInfoFailed(int error) {
-    std::cout << "Failed to get user info" << std::endl;
-}*/
-
 bool OsuMenu::init() {
     if (!CCLayer::init()) {
         return false;
@@ -302,6 +292,10 @@ void OsuMenu::update(float dt) {
         m_exitButton->runAction(move_btn);
         m_exitHovered = false;
     }
+
+    if (!getChildByTag(5)) { // if not profile layer exists
+        m_cookieButton->setOpacity(255);
+    }
 }
 
 OsuMenu* OsuMenu::switchToOsuMenuButton() {
@@ -366,6 +360,7 @@ void OsuMenu::exitCallback(CCObject* object) {
 }
 
 void OsuMenu::profileCallback(CCObject* object) {
+    m_cookieButton->setOpacity(0);
     gd::ProfilePage* layer = gd::ProfilePage::create(gd::GJAccountManager::sharedState()->m_nPlayerAccountID, true);
-    addChild(layer, 2);
+    addChild(layer, 2, 5);
 }
