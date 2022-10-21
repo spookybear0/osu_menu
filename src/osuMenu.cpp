@@ -35,7 +35,7 @@ bool OsuMenu::init() {
     gd::GameStatsManager* gsm = gd::GameStatsManager::sharedState();
 
     // setup background
-    CCSprite* bg_sprite = CCSprite::create("menu-bg.jpg");
+    CCSprite* bg_sprite = CCSprite::create("osu_menu/menu-bg.jpg");
 
     CCSize size = bg_sprite->getContentSize();
     
@@ -46,7 +46,7 @@ bool OsuMenu::init() {
     addChild(bg_sprite, -20);
 
     // sprite
-    CCSprite* cookie_sprite = CCSprite::create("menu-osu.png");
+    CCSprite* cookie_sprite = CCSprite::create("osu_menu/menu-osu.png");
     cookie_sprite->setPosition(ccp(winSize.width / 2, winSize.height / 2));
     cookie_sprite->setScale(0.85f);
 
@@ -64,10 +64,10 @@ bool OsuMenu::init() {
     addChild(m_cookieMenu, 3);
 
     // setup buttonsprites
-    CCSprite* play_sprite = CCSprite::create("menu-button-play.png");
-    CCSprite* edit_sprite = CCSprite::create("menu-button-edit.png");
-    CCSprite* options_sprite = CCSprite::create("menu-button-options.png");
-    CCSprite* exit_sprite = CCSprite::create("menu-button-exit.png");
+    CCSprite* play_sprite = CCSprite::create("osu_menu/menu-button-play.png");
+    CCSprite* edit_sprite = CCSprite::create("osu_menu/menu-button-edit.png");
+    CCSprite* options_sprite = CCSprite::create("osu_menu/menu-button-options.png");
+    CCSprite* exit_sprite = CCSprite::create("osu_menu/menu-button-exit.png");
 
     // sprite scale
     play_sprite->setScale(0.85f);
@@ -99,7 +99,7 @@ bool OsuMenu::init() {
 
     // setup tip text
 
-    CCLabelTTF* tip = CCLabelTTF::create(gd::LoadingLayer::getLoadingString(), "Aller.ttf", 10);
+    CCLabelTTF* tip = CCLabelTTF::create(gd::LoadingLayer::getLoadingString(), "osu_menu/Aller.ttf", 10);
     tip->setPosition(ccp(winSize.width / 2, 30));
     addChild(tip);
 
@@ -134,32 +134,32 @@ bool OsuMenu::init() {
     addChild(player);
 
     // player name
-    CCLabelTTF* name = CCLabelTTF::create("spookybear0", "Aller.ttf", 10);//am->getUsername()
+    CCLabelTTF* name = CCLabelTTF::create("spookybear0", "osu_menu/Aller.ttf", 10);//am->getUsername()
     name->setAnchorPoint({0, 0});
     name->setPosition(ccp(40, winSize.height - 15));
     addChild(name);
 
     // player stats
     int stars = gsm->m_pPlayerStats->valueForKey("6")->intValue();
-    CCLabelTTF* stars_label = CCLabelTTF::create((std::string("Total Stars: ") + std::to_string(stars)).c_str(), "Aller.ttf", 6);
+    CCLabelTTF* stars_label = CCLabelTTF::create((std::string("Total Stars: ") + std::to_string(stars)).c_str(), "osu_menu/Aller.ttf", 6);
     stars_label->setAnchorPoint({0, 0});
     stars_label->setPosition(ccp(40, winSize.height - 22));
     addChild(stars_label);
 
     int attempts = gsm->m_pPlayerStats->valueForKey("2")->intValue();
-    CCLabelTTF* attempts_label = CCLabelTTF::create((std::string("Attempts: ") + std::to_string(attempts)).c_str(), "Aller.ttf", 6);
+    CCLabelTTF* attempts_label = CCLabelTTF::create((std::string("Attempts: ") + std::to_string(attempts)).c_str(), "osu_menu/Aller.ttf", 6);
     attempts_label->setAnchorPoint({0, 0});
     attempts_label->setPosition(ccp(40, winSize.height - 29));
     addChild(attempts_label);
     
     int jumps = gsm->m_pPlayerStats->valueForKey("1")->intValue();
-    CCLabelTTF* jumps_label = CCLabelTTF::create((std::string("Jumps: ") + std::to_string(jumps)).c_str(), "Aller.ttf", 6);
+    CCLabelTTF* jumps_label = CCLabelTTF::create((std::string("Jumps: ") + std::to_string(jumps)).c_str(), "osu_menu/Aller.ttf", 6);
     jumps_label->setAnchorPoint({0, 0});
     jumps_label->setPosition(ccp(40, winSize.height - 36));
     addChild(jumps_label);
 
     // rank
-    m_rank = CCLabelTTF::create("", "exo.ttf", 20);
+    m_rank = CCLabelTTF::create("", "osu_menu/exo.ttf", 20);
     m_rank->setPosition(ccp(80, winSize.height - 36));
     m_rank->setAnchorPoint({0, 0});
     m_rank->setHorizontalAlignment(kCCTextAlignmentRight);
@@ -176,13 +176,6 @@ bool OsuMenu::init() {
     
     profileButtonMenu->addChild(gd::CCMenuItemSpriteExtra::create(profileButton, this, menu_selector(OsuMenu::profileCallback)));
     addChild(profileButtonMenu, 5);
-
-    /*CCArray* allkeys = gd::GameLevelManager::sharedState()->m_storedUserInfo->allKeys();
-    for(int i = 0; i < allkeys->count(); i++)
-    {
-        CCString* child = reinterpret_cast<CCString*>(allkeys->objectAtIndex(i));
-        std::cout << child->getCString() << " " << gd::GameLevelManager::sharedState()->m_storedUserInfo->valueForKey(child->m_sString)->intValue() << std::endl;
-    }*/
 
     return true;
 }
@@ -212,25 +205,25 @@ void OsuMenu::update(float dt) {
     )) {
         // reset all buttons
         if (m_playHovered) {
-            changeButtonSprite(m_playButton, "menu-button-play.png");
+            changeButtonSprite(m_playButton, "osu_menu/menu-button-play.png");
             m_playHovered = false;
             CCMoveBy* move_btn = CCMoveBy::create(0.1f, ccp(-25, 0));
             m_playButton->runAction(move_btn);
         }
         if (m_editHovered) {
-            changeButtonSprite(m_editButton, "menu-button-edit.png");
+            changeButtonSprite(m_editButton, "osu_menu/menu-button-edit.png");
             m_editHovered = false;
             CCMoveBy* move_btn = CCMoveBy::create(0.1f, ccp(-25, 0));
             m_editButton->runAction(move_btn);
         }
         if (m_optionsHovered) {
-            changeButtonSprite(m_optionsButton, "menu-button-options.png");
+            changeButtonSprite(m_optionsButton, "osu_menu/menu-button-options.png");
             m_optionsHovered = false;
             CCMoveBy* move_btn = CCMoveBy::create(0.1f, ccp(-25, 0));
             m_optionsButton->runAction(move_btn);
         }
         if (m_exitHovered) {
-            changeButtonSprite(m_exitButton, "menu-button-exit.png");
+            changeButtonSprite(m_exitButton, "osu_menu/menu-button-exit.png");
             m_exitHovered = false;
             CCMoveBy* move_btn = CCMoveBy::create(0.1f, ccp(-25, 0));
             m_exitButton->runAction(move_btn);
@@ -242,52 +235,52 @@ void OsuMenu::update(float dt) {
     // god forgive me
     if (m_playButton->boundingBox().containsPoint(m_buttonMenu->convertToNodeSpace(ccp(mousepos.x / framesize.width * winsize.width, (1 - mousepos.y / framesize.height) * winsize.height)))) {
         if (m_playHovered) return;
-        changeButtonSprite(m_playButton, "menu-button-play-over.png");
+        changeButtonSprite(m_playButton, "osu_menu/menu-button-play-over.png");
         CCMoveBy* move_btn = CCMoveBy::create(0.1f, ccp(25, 0));
         m_playButton->runAction(move_btn);
         m_playHovered = true;
     }
     else if (m_playHovered) {
-        changeButtonSprite(m_playButton, "menu-button-play.png");
+        changeButtonSprite(m_playButton, "osu_menu/menu-button-play.png");
         CCMoveBy* move_btn = CCMoveBy::create(0.1f, ccp(-25, 0));
         m_playButton->runAction(move_btn);
         m_playHovered = false;
     }
     if (m_editButton->boundingBox().containsPoint(m_buttonMenu->convertToNodeSpace(ccp(mousepos.x / framesize.width * winsize.width, (1 - mousepos.y / framesize.height) * winsize.height)))) {
         if (m_editHovered) return;
-        changeButtonSprite(m_editButton, "menu-button-edit-over.png");
+        changeButtonSprite(m_editButton, "osu_menu/menu-button-edit-over.png");
         CCMoveBy* move_btn = CCMoveBy::create(0.1f, ccp(25, 0));
         m_editButton->runAction(move_btn);
         m_editHovered = true;
     }
     else if (m_editHovered) {
-        changeButtonSprite(m_editButton, "menu-button-edit.png");
+        changeButtonSprite(m_editButton, "osu_menu/menu-button-edit.png");
         CCMoveBy* move_btn = CCMoveBy::create(0.1f, ccp(-25, 0));
         m_editButton->runAction(move_btn);
         m_editHovered = false;
     }
     if (m_optionsButton->boundingBox().containsPoint(m_buttonMenu->convertToNodeSpace(ccp(mousepos.x / framesize.width * winsize.width, (1 - mousepos.y / framesize.height) * winsize.height)))) {
         if (m_optionsHovered) return;
-        changeButtonSprite(m_optionsButton, "menu-button-options-over.png");
+        changeButtonSprite(m_optionsButton, "osu_menu/menu-button-options-over.png");
         CCMoveBy* move_btn = CCMoveBy::create(0.1f, ccp(25, 0));
         m_optionsButton->runAction(move_btn);
         m_optionsHovered = true;
     }
     else if (m_optionsHovered) {
-        changeButtonSprite(m_optionsButton, "menu-button-options.png");
+        changeButtonSprite(m_optionsButton, "osu_menu/menu-button-options.png");
         CCMoveBy* move_btn = CCMoveBy::create(0.1f, ccp(-25, 0));
         m_optionsButton->runAction(move_btn);
         m_optionsHovered = false;
     }
     if (m_exitButton->boundingBox().containsPoint(m_buttonMenu->convertToNodeSpace(ccp(mousepos.x / framesize.width * winsize.width, (1 - mousepos.y / framesize.height) * winsize.height)))) {
         if (m_exitHovered) return;
-        changeButtonSprite(m_exitButton, "menu-button-exit-over.png");
+        changeButtonSprite(m_exitButton, "osu_menu/menu-button-exit-over.png");
         CCMoveBy* move_btn = CCMoveBy::create(0.1f, ccp(25, 0));
         m_exitButton->runAction(move_btn);
         m_exitHovered = true;
     }
     else if (m_exitHovered) {
-        changeButtonSprite(m_exitButton, "menu-button-exit.png");
+        changeButtonSprite(m_exitButton, "osu_menu/menu-button-exit.png");
         CCMoveBy* move_btn = CCMoveBy::create(0.1f, ccp(-25, 0));
         m_exitButton->runAction(move_btn);
         m_exitHovered = false;

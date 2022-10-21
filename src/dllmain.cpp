@@ -28,11 +28,9 @@ std::string getGDPath() {
     return path;
 }
 
-bool(__thiscall* MenuLayer_initO)(CCLayer* self);
-bool __fastcall MenuLayer_initH(CCLayer* self, void*) {
-    if (!MenuLayer_initO(self)) { return false; };
-    menu = OsuMenu::switchToOsuMenuButton();
-    return true;
+OsuMenu* __fastcall MenuLayer_createH() {
+    menu = OsuMenu::create();
+    return menu;
 }
 
 // set the rank text in the menu
@@ -45,7 +43,7 @@ void __fastcall ProfilePage_loadPageFromUserInfoH(gd::ProfilePage* self, void*, 
 DWORD WINAPI dll_thread(void* hModule) {
     MH_Initialize();
 
-    MH_CreateHook((PVOID)(gd::base + 0x1907B0), MenuLayer_initH, (LPVOID*)&MenuLayer_initO);
+    MH_CreateHook((PVOID)(gd::base + 0x190550), MenuLayer_createH, NULL);
     MH_CreateHook((PVOID)(gd::base + 0x210040), ProfilePage_loadPageFromUserInfoH, (LPVOID*)&ProfilePage_loadPageFromUserInfoO);
 
     AllocConsole();
