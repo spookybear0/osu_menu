@@ -49,10 +49,6 @@ DWORD WINAPI dll_thread(void* hModule) {
     MH_CreateHook((PVOID)(gd::base + 0x190550), MenuLayer_createH, NULL);
     MH_CreateHook((PVOID)(gd::base + 0x210040), ProfilePage_loadPageFromUserInfoH, (LPVOID*)&ProfilePage_loadPageFromUserInfoO);
 
-    AllocConsole();
-    FILE* f;
-    freopen_s(&f, "CONOUT$", "w", stdout);
-
     MH_EnableHook(MH_ALL_HOOKS);
 
     return 0;
