@@ -12,7 +12,11 @@
 
 #include "OsuMenu.h"
 
+#define BPM 128
+
 USING_NS_CC;
+
+bool initailized = false;
 
 CCScene* pushLayer(CCLayer* layer) {
     CCScene* scene = CCScene::create();
@@ -27,12 +31,27 @@ bool OsuMenu::init() {
         return false;
     }
 
+    setKeypadEnabled(true);
+
     scheduleUpdate();
 
     CCSize winSize = CCDirector::sharedDirector()->getWinSize();
     gd::GameManager* gm = gd::GameManager::sharedState();
     gd::GJAccountManager* am = gd::GJAccountManager::sharedState();
     gd::GameStatsManager* gsm = gd::GameStatsManager::sharedState();
+
+    gd::GameSoundManager* soundManager = gd::GameSoundManager::sharedState();
+
+    if (!initailized) {
+        m_bgMusicPlaying = false;
+        soundManager->stopBackgroundMusic();
+        soundManager->playSound("osu_menu/welcome.ogg");
+        getScheduler()->scheduleSelector(schedule_selector(OsuMenu::resumeMusic), this, 3.5f, 0, 0, false);
+    }
+
+    //m_welcomeSprite = CCSprite::create("osu_menu/welcome_text.png");
+    //m_welcomeSprite->setOpacity(0);
+    //addChild(m_welcomeSprite, 30);
 
     // setup background
     CCSprite* bg_sprite = CCSprite::create("osu_menu/menu-bg.jpg");
@@ -46,17 +65,19 @@ bool OsuMenu::init() {
     addChild(bg_sprite, -20);
 
     // sprite
-    CCSprite* cookie_sprite = CCSprite::create("osu_menu/menu-osu.png");
-    cookie_sprite->setPosition(ccp(winSize.width / 2, winSize.height / 2));
-    cookie_sprite->setScale(0.85f);
+    m_cookieSprite = CCSprite::create("osu_menu/menu-osu.png");
+    m_cookieSprite->setPosition(ccp(winSize.width / 2, winSize.height / 2));
 
     // button for cookie
     m_cookieButton = gd::CCMenuItemSpriteExtra::create(
         // directly create the sprite here, as its our only use for it
-        cookie_sprite,
+        m_cookieSprite,
         this,
         menu_selector(OsuMenu::cookieCallback)
     );
+
+    m_cookieButton->setScale(0.85f);
+    m_cookieButton->setSizeMult(1.0f);
 
     // click menu
     m_cookieMenu = CCMenu::create();
@@ -177,6 +198,8 @@ bool OsuMenu::init() {
     profileButtonMenu->addChild(gd::CCMenuItemSpriteExtra::create(profileButton, this, menu_selector(OsuMenu::profileCallback)));
     addChild(profileButtonMenu, 5);
 
+    initailized = true;
+
     return true;
 }
 
@@ -197,6 +220,14 @@ void OsuMenu::update(float dt) {
 
     CCSize framesize = view->getFrameSize();
     CCSize winsize = CCDirector::sharedDirector()->getWinSize();
+
+    if (m_bgMusicPlaying) {
+        int oldStep = m_curStep;
+        stepUpdate();
+        beatUpdate();
+        if (oldStep != m_curStep && m_curStep > 0)
+            stepHit();
+    }
 
     if (m_cookieButton->boundingBox().containsPoint(
         m_cookieMenu->convertToNodeSpace(
@@ -305,20 +336,14 @@ void OsuMenu::changeButtonSprite(gd::CCMenuItemSpriteExtra* button, const char* 
     button->setScale(0.85f);
 }
 
-void OsuMenu::keyBackClicked() {
-    CCDirector::sharedDirector()->popSceneWithTransition(0.5f, PopTransition::kPopTransitionFade);
-}
-
-void OsuMenu::backButtonCallback(CCObject* object) {
-    keyBackClicked();
-}
-
 void OsuMenu::cookieCallback(CCObject* object) {
     if (!m_finishedMoving) {
         m_finishedMoving = true;
         CCMoveBy* move = CCMoveBy::create(0.75f, ccp(-65, 0));
         CCEaseExponentialOut* ease = CCEaseExponentialOut::create(move);
         m_cookieButton->runAction(ease);
+
+        m_cookieButton->setScale(0.85f);
 
         // buttons
 
@@ -349,11 +374,81 @@ void OsuMenu::optionsCallback(CCObject* object) {
 }
 
 void OsuMenu::exitCallback(CCObject* object) {
-    CCDirector::sharedDirector()->end();
+    CCLayerColor* myColorLayer = CCLayerColor::create(ccc4(0, 0, 0, 255));
+    CCScene* scene = CCScene::create();
+    scene->addChild(myColorLayer);
+
+    CCDirector::sharedDirector()->replaceScene(CCTransitionCrossFade::create(1.5f, scene));
+
+    gd::GameSoundManager* soundManager = gd::GameSoundManager::sharedState();
+    m_bgMusicPlaying = false;
+    soundManager->stopBackgroundMusic();
+    soundManager->playSound("osu_menu/seeyou.ogg");
+
+    m_playButton->setOpacity(0);
+    m_editButton->setOpacity(0);
+    m_optionsButton->setOpacity(0);
+    m_exitButton->setOpacity(0);
+
+    getScheduler()->scheduleSelector(schedule_selector(OsuMenu::endGame), this, 1.5f, 0, 0, false);
 }
 
 void OsuMenu::profileCallback(CCObject* object) {
     m_cookieButton->setOpacity(0);
     gd::ProfilePage* layer = gd::ProfilePage::create(gd::GJAccountManager::sharedState()->m_nPlayerAccountID, true);
     addChild(layer, 2, 5);
+}
+
+void OsuMenu::endGame(float dt) {
+    CCDirector::sharedDirector()->end();
+}
+
+void OsuMenu::resumeMusic(float dt) {
+    gd::GameSoundManager* soundManager = gd::GameSoundManager::sharedState();
+    m_bgMusicPlaying = true;
+    soundManager->playBackgroundMusic(true, "menuLoop.mp3");
+}
+
+void OsuMenu::stepHit() {
+	if (m_curStep % 4 == 0) {
+        m_beating = true;
+        CCScaleTo* scaleTo = CCScaleTo::create(0.3f, 0.91f);
+        m_cookieButton->runAction(CCEaseBackOut::create(scaleTo));
+    }
+    else if (m_beating) {
+        CCScaleTo* scaleTo = CCScaleTo::create(0.3f, 0.85f);
+        m_cookieButton->runAction(CCEaseBackOut::create(scaleTo));
+        m_beating = false;
+    }
+}
+void OsuMenu::beatUpdate() {
+	m_curStep = (int)floor((float)m_curStep / 4.f);
+}
+void OsuMenu::stepUpdate() {
+    float songPos = gd::FMODAudioEngine::sharedEngine()->getBackgroundMusicTime();
+	m_curStep = (int)floor(songPos / (60.f / BPM / 4.f));
+}
+
+void OsuMenu::keyBackClicked() {
+    if (m_finishedMoving) {
+        m_finishedMoving = false;
+
+        CCMoveBy* move = CCMoveBy::create(0.75f, ccp(65, 0));
+        CCEaseExponentialOut* ease = CCEaseExponentialOut::create(move);
+        m_cookieButton->runAction(ease);
+
+        // buttons
+
+        CCFadeOut* fadeOut = CCFadeOut::create(0.25f);
+        m_buttonMenu->runAction(fadeOut);
+
+        CCMoveBy* move_btns = CCMoveBy::create(1.25f, ccp(-25, 0));
+        CCEaseExponentialOut* ease_btns = CCEaseExponentialOut::create(move_btns);
+        m_buttonMenu->runAction(ease_btns);
+
+        m_buttonMenu->setVisible(false);
+    }
+    else {
+        exitCallback(NULL);
+    }
 }

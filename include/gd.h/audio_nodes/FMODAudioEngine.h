@@ -71,6 +71,17 @@ namespace gd {
 		bool isBackgroundMusicPlaying(const std::string& path) {
 			return path == m_sFilePath && isBackgroundMusicPlaying();
 		}
+
+		unsigned int getBGMusicPositionFMOD() {
+			const auto addr = GetProcAddress(GetModuleHandleA("fmod.dll"), "?getPosition@Channel@FMOD@@QAG?AW4FMOD_RESULT@@PAII@Z");
+			unsigned int ret;
+			reinterpret_cast<int(__stdcall*)(void*, unsigned int*, unsigned int)>(addr)(this->m_pGlobalChannel, &ret, 0x00000001);
+			return ret;
+		}
+
+		float getBackgroundMusicTime() {
+			return (float)(getBGMusicPositionFMOD()) / 1000.f;
+		}
 	};
 }
 

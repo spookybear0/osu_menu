@@ -28,9 +28,12 @@ std::string getGDPath() {
     return path;
 }
 
-OsuMenu* __fastcall MenuLayer_createH() {
+CCTransitionFade* __fastcall MenuLayer_createH() {
     menu = OsuMenu::create();
-    return menu;
+    CCScene* scene = CCScene::create();
+    scene->addChild(menu);
+    CCTransitionFade* transition = CCTransitionFade::create(0.5f, scene);
+    return transition;
 }
 
 // set the rank text in the menu

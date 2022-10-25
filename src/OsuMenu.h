@@ -28,6 +28,10 @@ private:
     bool m_editHovered = false;
     bool m_optionsHovered = false;
     bool m_exitHovered = false;
+
+    int m_curStep;
+    bool m_beating = false;
+    bool m_bgMusicPlaying = false;
 public:
     bool init();
     static OsuMenu* create();
@@ -36,14 +40,20 @@ public:
 
     CCLabelTTF* m_rank;
     gd::CCMenuItemSpriteExtra* m_cookieButton;
+    CCSprite* m_cookieSprite;
+    CCSprite* m_welcomeSprite;
 protected:
     void changeButtonSprite(gd::CCMenuItemSpriteExtra* button, const char* spriteName);
     void keyBackClicked();
-    void backButtonCallback(CCObject* object);
     void cookieCallback(CCObject* object);
     void playCallback(CCObject* object);
     void editCallback(CCObject* object);
     void optionsCallback(CCObject* object);
     void exitCallback(CCObject* object);
     void profileCallback(CCObject* object);
+    void endGame(float dt);
+    void resumeMusic(float dt);
+    void stepHit();
+    void beatUpdate();
+    void stepUpdate();
 };
