@@ -8,3 +8,7 @@ osu! main menu in Geometry Dash
 
 - Copy assets to Geometry Dash/osu_menu.
 - Load dll with dll injector of choice.
+
+## Video
+
+### Coming soon
