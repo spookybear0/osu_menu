@@ -20,4 +20,4 @@ osu! main menu in Geometry Dash
 
 ## Video
 
-### Coming soon
+[Click here to watch the showcase video!](https://cdn.discordapp.com/attachments/1034540117441921124/1034542423822577795/2022-10-25_12-01-11.mp4)
